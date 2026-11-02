@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin boutiques | Ela Group Services</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#101B2D">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --navy:#101B2D; --amber:#EFA928; --teal:#1E8A78; --red:#C0392B;
+    --bg:#F5F1E6; --card:#FFFFFF; --text:#1B1712; --soft:rgba(27,23,18,.62); --line:rgba(27,23,18,.16); }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#0E1420; --card:#161F30; --text:#F1ECDD; --soft:rgba(241,236,221,.64); --line:rgba(241,236,221,.18); --red:#ff7b6b; } }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+  h1,h2,h3,.brand{font-family:"Space Grotesk",system-ui,sans-serif}
+  .top{background:var(--navy);color:#F6FBF8;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+  .brand{font-weight:700}
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+  label{display:block;font-weight:600;font-size:.9rem;margin:12px 0 4px}
+  input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border:0;cursor:pointer;font:600 .9rem "IBM Plex Sans",sans-serif;padding:10px 14px;border-radius:10px;background:var(--amber);color:#101B2D;text-decoration:none;min-height:42px}
+  .btn.ghost{background:transparent;color:inherit;border:1px solid var(--line)}
+  .btn.danger{background:transparent;color:var(--red);border:1px solid var(--red)}
+  .btn:disabled{opacity:.55}
+  .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:rgba(239,169,40,.25);margin-left:6px}
+  .tag.off{background:rgba(192,57,43,.18);color:var(--red)}
+  .soft{color:var(--soft);font-size:.88rem}
+  .msg{padding:10px 12px;border-radius:10px;margin-top:12px;font-size:.92rem;background:rgba(192,57,43,.12);color:var(--red)}
+  .prod{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+  .prod img,.prod .ph{width:44px;height:44px;border-radius:8px;object-fit:cover;background:var(--bg);flex:none;display:flex;align-items:center;justify-content:center}
+  .prod .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="top"><span class="brand">EGS · Admin boutiques</span><span id="who" class="soft" style="color:#F6FBF8;opacity:.8"></span></div>
+<div class="wrap" id="app"><p class="soft">Chargement…</p></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const ADMIN_EMAIL = "elagroupservices96@gmail.com";
+const app = initializeApp({
+  apiKey: "AIzaSyDz8eWj67YWFq5mPu5X_e2q9n6YHq0XF-k",
+  authDomain: "elagroupservices-7d3b6.firebaseapp.com",
+  projectId: "elagroupservices-7d3b6",
+  storageBucket: "elagroupservices-7d3b6.firebasestorage.app",
+  messagingSenderId: "402394593738",
+  appId: "1:402394593738:web:10282d65f1c5fb04463733"
+});
+const auth = getAuth(app), db = getFirestore(app);
+const root = document.getElementById("app"), who = document.getElementById("who");
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const x of kids.flat()) if (x != null) e.append(x.nodeType ? x : document.createTextNode(x));
+  return e;
+}
+const fmt = n => Number(n).toLocaleString("fr-FR") + " FCFA";
+const okImg = s => typeof s === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(s);
+const logout = () => h("button", { class: "btn ghost", onclick: () => signOut(auth) }, "Se déconnecter");
+
+function viewLogin() {
+  const msg = h("div");
+  const email = h("input", { type: "email", required: "", value: ADMIN_EMAIL });
+  const pass = h("input", { type: "password", required: "", autocomplete: "current-password" });
+  root.replaceChildren(h("div", { class: "panel" }, h("h2", {}, "Connexion administrateur"),
+    h("form", { onsubmit: async ev => { ev.preventDefault(); msg.replaceChildren();
+      try { await signInWithEmailAndPassword(auth, email.value.trim(), pass.value); }
+      catch (e) { msg.replaceChildren(h("div", { class: "msg" }, "E-mail ou mot de passe incorrect.")); } } },
+      h("label", {}, "E-mail"), email, h("label", {}, "Mot de passe"), pass,
+      h("div", { class: "row" }, h("button", { class: "btn", type: "submit" }, "Se connecter")), msg)));
+}
+
+async function viewShops() {
+  root.replaceChildren(h("p", { class: "soft" }, "Chargement des boutiques…"));
+  let shops = [];
+  try {
+    const sd = await getDocs(collection(db, "shops"));
+    shops = sd.docs.map(d => ({ uid: d.id, ...d.data() }));
+    await Promise.all(shops.map(async s => {
+      const isn = await getDocs(collection(db, "shops", s.uid, "items"));
+      s.items = isn.docs.map(d => ({ id: d.id, ...d.data() }));
+    }));
+  } catch (e) { root.replaceChildren(h("div", { class: "msg" }, "Impossible de charger : vérifiez que les nouvelles règles Firestore sont publiées."), logout()); return; }
+  const nb = shops.length;
+  root.replaceChildren(h("h2", { style: "margin-bottom:12px" }, nb + (nb > 1 ? " boutiques" : " boutique")),
+    ...(nb ? shops.map(shopCard) : [h("p", { class: "soft" }, "Aucune boutique pour le moment.")]), h("div", { class: "row" }, logout()));
+}
+
+function shopCard(s) {
+  const box = h("div", { class: "panel" });
+  const list = h("div", { style: "display:none" });
+  const draw = () => {
+    box.replaceChildren(
+      h("h3", {}, s.name || "(sans nom)", s.blocked ? h("span", { class: "tag off" }, "Suspendue") : null),
+      h("p", { class: "soft" }, "WhatsApp : +" + (s.whatsapp || "?") + " · " + s.items.length + " produit(s)"),
+      h("p", { class: "soft" }, "Lien : boutique.html?b=" + (s.slug || "?")),
+      h("div", { class: "row" },
+        h("a", { class: "btn ghost", href: "boutique.html?b=" + encodeURIComponent(s.slug || ""), target: "_blank", rel: "noopener" }, "Voir"),
+        h("button", { class: "btn ghost", onclick: () => { list.style.display = list.style.display === "none" ? "block" : "none"; } }, "Produits"),
+        h("button", { class: "btn ghost", onclick: async ev => {
+          ev.target.disabled = true;
+          try { await updateDoc(doc(db, "shops", s.uid), { blocked: !s.blocked }); s.blocked = !s.blocked; } catch (e) { alert("Action impossible."); }
+          draw(); } }, s.blocked ? "Réactiver" : "Suspendre"),
+        h("button", { class: "btn danger", onclick: async () => {
+          if (!confirm("Supprimer définitivement la boutique « " + s.name + " » et tous ses produits ?")) return;
+          try {
+            for (const p of s.items) await deleteDoc(doc(db, "shops", s.uid, "items", p.id));
+            await deleteDoc(doc(db, "shops", s.uid));
+            if (s.slug) await deleteDoc(doc(db, "slugs", s.slug));
+            box.remove();
+          } catch (e) { alert("Suppression impossible."); } } }, "Supprimer")),
+      list);
+    list.replaceChildren(...(s.items.length ? s.items.map(p => h("div", { class: "prod" },
+      okImg(p.image) ? h("img", { src: p.image, alt: "" }) : h("div", { class: "ph" }, "🛍"),
+      h("div", { class: "n" }, p.name + " — " + fmt(p.price)),
+      h("button", { class: "btn danger", style: "min-height:34px;padding:6px 10px", onclick: async () => {
+        if (!confirm("Supprimer ce produit ?")) return;
+        try { await deleteDoc(doc(db, "shops", s.uid, "items", p.id)); s.items = s.items.filter(x => x.id !== p.id); draw(); list.style.display = "block"; } catch (e) { alert("Suppression impossible."); } } }, "Retirer"))) : [h("p", { class: "soft" }, "Aucun produit.")]));
+    box.append(list);
+  };
+  draw(); return box;
+}
+
+onAuthStateChanged(auth, u => {
+  who.textContent = u ? u.email : "";
+  if (!u) return viewLogin();
+  if (u.email !== ADMIN_EMAIL) { root.replaceChildren(h("div", { class: "msg" }, "Accès réservé à l'administrateur."), h("div", { class: "row" }, logout())); return; }
+  viewShops();
+});
+</script>
+</body>
+</html>

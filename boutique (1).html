@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutiques | Ela Group Services</title>
+<meta name="description" content="Les boutiques en ligne créées avec Ela Group Services : commandez directement sur WhatsApp.">
+<meta name="theme-color" content="#101B2D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101B2D; --amber:#EFA928; --amber-deep:#C97F0F; --teal:#1E8A78;
+    --bg:#F5F1E6; --card:#FFFFFF; --text:#1B1712; --soft:rgba(27,23,18,.62); --line:rgba(27,23,18,.14);
+    --grad:linear-gradient(135deg,#0A3556 0%,#0D6A78 55%,#16A068 100%);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0E1420; --card:#161F30; --text:#F1ECDD; --soft:rgba(241,236,221,.64); --line:rgba(241,236,221,.14); }
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+  h1,h2,h3,.brand{font-family:"Space Grotesk",system-ui,sans-serif}
+  a{color:inherit}
+  .top{background:var(--navy);color:#F6FBF8;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+  .brand{font-weight:700;text-decoration:none;letter-spacing:.02em;font-size:1rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font:600 .95rem "IBM Plex Sans",sans-serif;
+       padding:12px 18px;border-radius:10px;background:var(--amber);color:#101B2D;text-decoration:none;min-height:44px}
+  .btn:hover{background:#f5b94a}
+  .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}
+  .btn.wa{background:#16A068;color:#fff}
+  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+  .hero{background:var(--grad);color:#F6FBF8;padding:36px 16px 40px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .hero h1{font-size:clamp(1.7rem,6vw,2.6rem);line-height:1.15;margin-bottom:10px}
+  .hero p{opacity:.9;max-width:60ch;margin-bottom:18px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px}
+  main{padding:24px 16px 56px}
+  .search{width:100%;max-width:420px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;margin-bottom:20px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .card .img{aspect-ratio:1/1;background:linear-gradient(135deg,rgba(10,53,86,.15),rgba(22,160,104,.18));display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:var(--soft)}
+  .card .img img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .card h3{font-size:1.05rem}
+  .price{color:var(--amber-deep);font-weight:700}
+  @media (prefers-color-scheme: dark){.price{color:var(--amber)}}
+  .desc{color:var(--soft);font-size:.9rem}
+  .card .btn{margin-top:auto;width:100%}
+  .tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:rgba(239,169,40,.2);align-self:flex-start}
+  .empty{padding:40px 16px;text-align:center;color:var(--soft)}
+  .shop-head{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+  .avatar{width:56px;height:56px;border-radius:14px;background:var(--amber);color:#101B2D;display:flex;align-items:center;justify-content:center;font:700 1.5rem "Space Grotesk";flex:none}
+  footer{padding:24px 16px 40px;text-align:center;color:var(--soft);font-size:.9rem}
+  footer a{color:var(--teal);font-weight:600}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="brand" href="boutique.html">EGS · Boutiques</a>
+  <a class="btn" href="vendeur.html">Ouvrir ma boutique</a>
+</div>
+<div class="hero"><div class="wrap" id="hero"></div></div>
+<main><div class="wrap" id="app"><p class="empty">Chargement…</p></div></main>
+<footer>Boutiques propulsées par <a href="index.html">Ela Group Services</a> · Abidjan</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDz8eWj67YWFq5mPu5X_e2q9n6YHq0XF-k",
+  authDomain: "elagroupservices-7d3b6.firebaseapp.com",
+  projectId: "elagroupservices-7d3b6",
+  storageBucket: "elagroupservices-7d3b6.firebasestorage.app",
+  messagingSenderId: "402394593738",
+  appId: "1:402394593738:web:10282d65f1c5fb04463733"
+});
+const db = getFirestore(app);
+
+/* petit helper pour créer des éléments sans innerHTML (le contenu des vendeurs n'est jamais interprété comme du HTML) */
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const x of kids.flat()) if (x != null) e.append(x.nodeType ? x : document.createTextNode(x));
+  return e;
+}
+const fmt = n => Number(n).toLocaleString("fr-FR") + " FCFA";
+const safeImg = s => typeof s === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(s) ? s : "";
+const app$ = document.getElementById("app"), hero = document.getElementById("hero");
+const slug = (new URLSearchParams(location.search).get("b") || "").toLowerCase().trim();
+
+function waLink(number, text) {
+  return "https://wa.me/" + String(number).replace(/\D/g, "") + "?text=" + encodeURIComponent(text);
+}
+
+async function showList() {
+  hero.replaceChildren(
+    h("h1", {}, "Achetez chez les commerçants d'Abidjan"),
+    h("p", {}, "Chaque vendeur a sa propre boutique. Choisissez un produit et commandez directement sur son WhatsApp."),
+    h("div", { class: "actions" }, h("a", { class: "btn", href: "vendeur.html" }, "Ouvrir ma boutique gratuitement"))
+  );
+  let shops = [];
+  try {
+    const snap = await getDocs(collection(db, "shops"));
+    shops = snap.docs.map(d => d.data()).filter(s => s.slug && s.name && s.blocked !== true);
+  } catch (e) { console.warn(e); }
+  if (!shops.length) { app$.replaceChildren(h("p", { class: "empty" }, "Aucune boutique pour le moment. Soyez le premier à ouvrir la vôtre !")); return; }
+  const grid = h("div", { class: "grid" });
+  const search = h("input", { class: "search", type: "search", placeholder: "Rechercher une boutique…", "aria-label": "Rechercher une boutique" });
+  const draw = () => {
+    const q = search.value.trim().toLowerCase();
+    const list = shops.filter(s => !q || (s.name + " " + (s.description || "")).toLowerCase().includes(q));
+    grid.replaceChildren(...list.map(s => h("a", { class: "card", href: "boutique.html?b=" + encodeURIComponent(s.slug), style: "text-decoration:none" },
+      h("div", { class: "img" }, s.name.trim().charAt(0).toUpperCase()),
+      h("div", { class: "body" }, h("h3", {}, s.name), h("p", { class: "desc" }, s.description || ""), h("span", { class: "btn ghost" }, "Voir la boutique")))));
+    if (!list.length) grid.replaceChildren(h("p", { class: "empty" }, "Aucune boutique trouvée."));
+  };
+  search.addEventListener("input", draw); draw();
+  app$.replaceChildren(search, grid);
+}
+
+async function showShop() {
+  let shop = null, items = [];
+  try {
+    if (/^[a-z0-9-]{2,40}$/.test(slug)) {
+      const s = await getDoc(doc(db, "slugs", slug));
+      if (s.exists()) {
+        const uid = s.data().uid;
+        const sd = await getDoc(doc(db, "shops", uid));
+        if (sd.exists() && sd.data().blocked !== true) {
+          shop = sd.data();
+          const isn = await getDocs(query(collection(db, "shops", uid, "items"), orderBy("createdAt", "desc")));
+          items = isn.docs.map(d => d.data());
+        }
+      }
+    }
+  } catch (e) { console.warn(e); }
+  if (!shop) {
+    hero.replaceChildren(h("h1", {}, "Boutique introuvable"), h("p", {}, "Ce lien ne correspond à aucune boutique."),
+      h("a", { class: "btn", href: "boutique.html" }, "Voir toutes les boutiques"));
+    app$.replaceChildren(); return;
+  }
+  document.title = shop.name + " | Boutique";
+  const shopUrl = location.href;
+  const share = h("a", { class: "btn ghost", href: "https://wa.me/?text=" + encodeURIComponent("Découvre la boutique " + shop.name + " : " + shopUrl), target: "_blank", rel: "noopener" }, "Partager");
+  hero.replaceChildren(
+    h("div", { class: "shop-head" }, h("div", { class: "avatar" }, shop.name.trim().charAt(0).toUpperCase()), h("h1", {}, shop.name)),
+    h("p", {}, shop.description || ""),
+    h("div", { class: "actions" },
+      h("a", { class: "btn wa", href: waLink(shop.whatsapp, "Bonjour " + shop.name + ", je vous contacte depuis votre boutique en ligne."), target: "_blank", rel: "noopener" }, "Écrire au vendeur"), share));
+  if (!items.length) { app$.replaceChildren(h("p", { class: "empty" }, "Cette boutique n'a pas encore de produits.")); return; }
+  app$.replaceChildren(h("div", { class: "grid" }, items.map(p => {
+    const img = safeImg(p.image), out = p.available === false;
+    const msg = "Bonjour " + shop.name + ", je souhaite commander : " + p.name + " (" + fmt(p.price) + ").\nLieu de livraison : (je vous l'écris ici)";
+    return h("article", { class: "card" },
+      h("div", { class: "img" }, img ? h("img", { src: img, alt: p.name, loading: "lazy" }) : "🛍"),
+      h("div", { class: "body" },
+        out ? h("span", { class: "tag" }, "Épuisé") : null,
+        h("h3", {}, p.name), h("p", { class: "price" }, fmt(p.price)),
+        p.description ? h("p", { class: "desc" }, p.description) : null,
+        h("a", { class: "btn wa", href: out ? "#" : waLink(shop.whatsapp, msg), "aria-disabled": out ? "true" : null, target: "_blank", rel: "noopener" }, "Commander sur WhatsApp")));
+  })));
+}
+
+slug ? showShop() : showList();
+</script>
+</body>
+</html>
