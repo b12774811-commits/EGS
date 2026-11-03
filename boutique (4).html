@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boutiques | Ela Group Services</title>
+<meta name="description" content="Les boutiques en ligne créées avec Ela Group Services : commandez directement sur WhatsApp.">
+<meta name="theme-color" content="#101B2D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101B2D; --amber:#EFA928; --amber-deep:#C97F0F; --teal:#1E8A78;
+    --bg:#F5F1E6; --card:#FFFFFF; --text:#1B1712; --soft:rgba(27,23,18,.62); --line:rgba(27,23,18,.14);
+    --grad:linear-gradient(135deg,#0A3556 0%,#0D6A78 55%,#16A068 100%);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#0E1420; --card:#161F30; --text:#F1ECDD; --soft:rgba(241,236,221,.64); --line:rgba(241,236,221,.14); }
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+  h1,h2,h3,.brand{font-family:"Space Grotesk",system-ui,sans-serif}
+  a{color:inherit}
+  .top{background:var(--navy);color:#F6FBF8;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px}
+  .brand{font-weight:700;text-decoration:none;letter-spacing:.02em;font-size:1rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;cursor:pointer;font:600 .95rem "IBM Plex Sans",sans-serif;
+       padding:12px 18px;border-radius:10px;background:var(--amber);color:#101B2D;text-decoration:none;min-height:44px}
+  .btn:hover{background:#f5b94a}
+  .btn.ghost{background:transparent;color:inherit;border:1px solid currentColor}
+  .btn.wa{background:#16A068;color:#fff}
+  .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+  .hero{background:var(--grad);color:#F6FBF8;padding:36px 16px 40px}
+  .wrap{max-width:1000px;margin:0 auto}
+  .hero h1{font-size:clamp(1.7rem,6vw,2.6rem);line-height:1.15;margin-bottom:10px}
+  .hero p{opacity:.9;max-width:60ch;margin-bottom:18px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px}
+  main{padding:24px 16px 56px}
+  .search{width:100%;max-width:420px;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;margin-bottom:20px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .card .img{aspect-ratio:1/1;background:linear-gradient(135deg,rgba(10,53,86,.15),rgba(22,160,104,.18));display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:var(--soft)}
+  .card .img img{width:100%;height:100%;object-fit:cover;display:block}
+  .card .img img,.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .avatar{overflow:hidden}
+  /* Badge "1 mois gratuit" qui clignote doucement */
+  .promo{display:inline-block;background:#FFC93C;color:#101B2D;font-weight:700;padding:6px 12px;border-radius:999px;font-size:.9rem;animation:promo-blink 1.1s ease-in-out infinite}
+  @keyframes promo-blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.06)}}
+  @media (prefers-reduced-motion: reduce){ .promo{animation:none} }
+  .thumbs{display:flex;gap:6px;padding:8px 12px 0;overflow-x:auto}
+  .thumbs img{width:48px;height:48px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer;flex:none}
+  .thumbs img.on{border-color:var(--amber)}
+  .card .body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .card h3{font-size:1.05rem}
+  .price{color:var(--amber-deep);font-weight:700}
+  @media (prefers-color-scheme: dark){.price{color:var(--amber)}}
+  .desc{color:var(--soft);font-size:.9rem}
+  .card .btn{margin-top:auto;width:100%}
+  .tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:99px;background:rgba(239,169,40,.2);align-self:flex-start}
+  .empty{padding:40px 16px;text-align:center;color:var(--soft)}
+  .shop-head{display:flex;gap:14px;align-items:center;margin-bottom:6px}
+  .avatar{width:56px;height:56px;border-radius:14px;background:var(--amber);color:#101B2D;display:flex;align-items:center;justify-content:center;font:700 1.5rem "Space Grotesk";flex:none}
+  footer{padding:24px 16px 40px;text-align:center;color:var(--soft);font-size:.9rem}
+  footer a{color:var(--teal);font-weight:600}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="brand" href="boutique.html">EGS · Boutiques</a>
+  <a class="btn" href="vendeur.html">Ouvrir ma boutique</a>
+</div>
+<div class="hero"><div class="wrap" id="hero"></div></div>
+<main><div class="wrap" id="app"><p class="empty">Chargement…</p></div></main>
+<footer>Boutiques propulsées par <a href="index.html">Ela Group Services</a> · Abidjan</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, doc, query, orderBy, limit, where, setDoc, deleteDoc, serverTimestamp, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDz8eWj67YWFq5mPu5X_e2q9n6YHq0XF-k",
+  authDomain: "elagroupservices-7d3b6.firebaseapp.com",
+  projectId: "elagroupservices-7d3b6",
+  storageBucket: "elagroupservices-7d3b6.firebasestorage.app",
+  messagingSenderId: "402394593738",
+  appId: "1:402394593738:web:10282d65f1c5fb04463733"
+});
+const db = getFirestore(app);
+const auth = getAuth(app);
+/* J'aime : un seul par appareil (compte anonyme Firebase, créé seulement au premier clic) */
+const getUser = () => new Promise(res => { const off = onAuthStateChanged(auth, u => { off(); res(u); }); });
+async function ensureUser() { const u = auth.currentUser || await getUser(); return u || (await signInAnonymously(auth)).user; }
+async function countLikes(field, val) { const r = await getCountFromServer(query(collection(db, "likes"), where(field, "==", val))); return r.data().count; }
+
+/* petit helper pour créer des éléments sans innerHTML (le contenu des vendeurs n'est jamais interprété comme du HTML) */
+function h(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const x of kids.flat()) if (x != null) e.append(x.nodeType ? x : document.createTextNode(x));
+  return e;
+}
+const fmt = n => Number(n).toLocaleString("fr-FR") + " FCFA";
+const safeImg = s => typeof s === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(s) ? s : "";
+const app$ = document.getElementById("app"), hero = document.getElementById("hero");
+/* Abonnement : 1 mois gratuit après la création (ou après le lancement), puis abonnements/{uid}.paidUntil */
+const TRIAL_DAYS = 30, LAUNCH = new Date("2026-11-03T00:00:00Z");
+function shopActive(shop, sub) {
+  const c = shop && shop.createdAt && shop.createdAt.toDate ? shop.createdAt.toDate() : new Date();
+  const start = c > LAUNCH ? c : LAUNCH;
+  const trialEnd = new Date(start.getTime() + TRIAL_DAYS * 864e5);
+  const paid = sub && sub.paidUntil && sub.paidUntil.toDate ? sub.paidUntil.toDate() : null;
+  const now = new Date();
+  return now < trialEnd || !!(paid && now < paid);
+}
+const slug = (new URLSearchParams(location.search).get("b") || "").toLowerCase().trim();
+
+function waLink(number, text) {
+  return "https://wa.me/" + String(number).replace(/\D/g, "") + "?text=" + encodeURIComponent(text);
+}
+
+async function showList() {
+  hero.replaceChildren(
+    h("h1", {}, "Achetez chez les commerçants d'Abidjan"),
+    h("p", {}, "Chaque vendeur a sa propre boutique. Choisissez un produit et commandez directement sur son WhatsApp."),
+    h("div", { class: "actions" }, h("a", { class: "btn", href: "vendeur.html" }, "Ouvrir ma boutique gratuitement"), h("span", { class: "promo" }, "🎁 1er mois gratuit"))
+  );
+  let shops = [];
+  try {
+    const snap = await getDocs(collection(db, "shops"));
+    shops = snap.docs.map(d => d.data()).filter(s => s.slug && s.name && s.blocked !== true);
+    /* on masque les boutiques dont l'abonnement est terminé (si la lecture échoue, on ne masque rien) */
+    try {
+      const subs = {}; (await getDocs(collection(db, "abonnements"))).forEach(d => { subs[d.id] = d.data(); });
+      shops = shops.filter(s => shopActive(s, subs[s.ownerUid]));
+      shops.forEach(s => { const b = subs[s.ownerUid] && subs[s.ownerUid].boostUntil; s.boosted = !!(b && b.toDate && b.toDate() > new Date()); });
+      shops.sort((a, b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0));
+    } catch (e) { console.warn(e); }
+  } catch (e) { console.warn(e); }
+  if (!shops.length) { app$.replaceChildren(h("p", { class: "empty" }, "Aucune boutique pour le moment. Soyez le premier à ouvrir la vôtre !")); return; }
+  const grid = h("div", { class: "grid" });
+  const search = h("input", { class: "search", type: "search", placeholder: "Rechercher une boutique…", "aria-label": "Rechercher une boutique" });
+  const draw = () => {
+    const q = search.value.trim().toLowerCase();
+    const list = shops.filter(s => !q || (s.name + " " + (s.description || "")).toLowerCase().includes(q));
+    grid.replaceChildren(...list.map(s => h("a", { class: "card", href: "boutique.html?b=" + encodeURIComponent(s.slug), style: "text-decoration:none" },
+      h("div", { class: "img", "data-uid": s.ownerUid || "" }, safeImg(s.logo) ? h("img", { src: s.logo, alt: s.name, loading: "lazy" }) : s.name.trim().charAt(0).toUpperCase()),
+      h("div", { class: "body" }, s.boosted ? h("span", { class: "tag" }, "⭐ Sponsorisée") : null, h("h3", {}, s.name), h("p", { class: "desc" }, s.description || ""), s.likes != null ? h("p", { class: "price" }, "❤️ " + s.likes) : null, h("span", { class: "btn ghost" }, "Voir la boutique")))));
+    if (!list.length) grid.replaceChildren(h("p", { class: "empty" }, "Aucune boutique trouvée."));
+  };
+  search.addEventListener("input", draw); draw();
+  /* classement : les boutiques les plus aimées en premier */
+  Promise.all(shops.map(async s => { if (!s.ownerUid) return; try { s.likes = await countLikes("shop", s.ownerUid); } catch (e) { console.warn(e); } }))
+    .then(() => { if (shops.some(s => s.likes != null)) { shops.sort((a, b) => (b.boosted ? 1 : 0) - (a.boosted ? 1 : 0) || (b.likes || 0) - (a.likes || 0)); draw(); } });
+  /* boutiques sans logo : on affiche la photo de leur premier produit avec photo */
+  shops.filter(s => !safeImg(s.logo) && s.ownerUid).forEach(async s => {
+    try {
+      const r = await getDocs(query(collection(db, "shops", s.ownerUid, "items"), orderBy("createdAt", "desc"), limit(8)));
+      const it = r.docs.map(d => d.data()).find(x => safeImg(x.image));
+      if (it) s.logo = it.image, draw();
+    } catch (e) { console.warn(e); }
+  });
+  app$.replaceChildren(search, grid);
+}
+
+async function showShop() {
+  let shop = null, items = [], inactive = "", shopUid = "";
+  try {
+    if (/^[a-z0-9-]{2,40}$/.test(slug)) {
+      const s = await getDoc(doc(db, "slugs", slug));
+      if (s.exists()) {
+        const uid = s.data().uid; shopUid = uid;
+        const sd = await getDoc(doc(db, "shops", uid));
+        if (sd.exists() && sd.data().blocked !== true) {
+          shop = sd.data();
+          let sub = null, subOk = true;
+          try { const ab = await getDoc(doc(db, "abonnements", uid)); sub = ab.exists() ? ab.data() : null; } catch (e) { subOk = false; }
+          if (subOk && !shopActive(shop, sub)) { inactive = shop.name; shop = null; }
+        }
+        if (shop) {
+          const isn = await getDocs(query(collection(db, "shops", uid, "items"), orderBy("createdAt", "desc")));
+          items = isn.docs.map(d => ({ id: d.id, ...d.data() }));
+        }
+      }
+    }
+  } catch (e) { console.warn(e); }
+  if (!shop && inactive) {
+    hero.replaceChildren(h("h1", {}, inactive), h("p", {}, "Cette boutique est momentanément indisponible."),
+      h("a", { class: "btn", href: "boutique.html" }, "Voir toutes les boutiques"));
+    app$.replaceChildren(); return;
+  }
+  if (!shop) {
+    hero.replaceChildren(h("h1", {}, "Boutique introuvable"), h("p", {}, "Ce lien ne correspond à aucune boutique."),
+      h("a", { class: "btn", href: "boutique.html" }, "Voir toutes les boutiques"));
+    app$.replaceChildren(); return;
+  }
+  document.title = shop.name + " | Boutique";
+  const shopUrl = location.href;
+  const share = h("a", { class: "btn ghost", href: "https://wa.me/?text=" + encodeURIComponent("Découvre la boutique " + shop.name + " : " + shopUrl), target: "_blank", rel: "noopener" }, "Partager");
+  hero.replaceChildren(
+    h("div", { class: "shop-head" }, h("div", { class: "avatar" }, (() => { const l = safeImg(shop.logo) || (items.map(x => safeImg(x.image)).find(Boolean) || ""); return l ? h("img", { src: l, alt: shop.name }) : shop.name.trim().charAt(0).toUpperCase(); })()), h("h1", {}, shop.name)),
+    h("p", {}, shop.description || ""),
+    h("div", { class: "actions" },
+      h("a", { class: "btn wa", href: waLink(shop.whatsapp, "Bonjour " + shop.name + ", je vous contacte depuis votre boutique en ligne."), target: "_blank", rel: "noopener" }, "Écrire au vendeur"), share));
+  if (!items.length) { app$.replaceChildren(h("p", { class: "empty" }, "Cette boutique n'a pas encore de produits.")); return; }
+  /* J'aime, partage, ventes */
+  const counts = {}, liked = new Set();
+  await Promise.all(items.map(async p => { try { counts[p.id] = await countLikes("item", p.id); } catch (e) { console.warn(e); } }));
+  try {
+    const u = await getUser();
+    if (u) (await getDocs(query(collection(db, "likes"), where("uid", "==", u.uid)))).forEach(d => liked.add(d.data().item));
+  } catch (e) { console.warn(e); }
+  function likeBtn(p) {
+    let n = counts[p.id] || 0, on = liked.has(p.id);
+    const b = h("button", { type: "button", class: "btn ghost" });
+    const paint = () => { b.textContent = (on ? "❤️ " : "🤍 ") + n; };
+    paint();
+    b.onclick = async () => {
+      b.disabled = true;
+      try {
+        const u = await ensureUser(), id = p.id + "_" + u.uid;
+        if (on) { await deleteDoc(doc(db, "likes", id)); on = false; n = Math.max(0, n - 1); }
+        else { await setDoc(doc(db, "likes", id), { item: p.id, shop: shopUid, uid: u.uid, at: serverTimestamp() }); on = true; n += 1; }
+        paint();
+      } catch (e) { console.warn(e); b.textContent = "J'aime indisponible"; setTimeout(paint, 2000); }
+      b.disabled = false;
+    };
+    return b;
+  }
+  function shareBtn(p) {
+    const text = p.name + " (" + fmt(p.price) + ") chez " + shop.name + " : " + shopUrl;
+    return h("button", { type: "button", class: "btn ghost", onclick: async () => {
+      if (navigator.share) { try { await navigator.share({ title: p.name, text, url: shopUrl }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+      window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
+    } }, "Partager");
+  }
+  app$.replaceChildren(h("div", { class: "grid" }, items.map(p => {
+    const imgs = ((Array.isArray(p.images) && p.images.length) ? p.images : [p.image]).filter(safeImg), img = imgs[0] || "", out = p.available === false;
+    const msg = "Bonjour " + shop.name + ", je souhaite commander : " + p.name + " (" + fmt(p.price) + ").\nLieu de livraison : (je vous l'écris ici)";
+    return h("article", { class: "card" },
+      h("div", { class: "img" }, img ? h("img", { src: img, alt: p.name, loading: "lazy" }) : "🛍"),
+      imgs.length > 1 ? (() => {
+        const t = h("div", { class: "thumbs" });
+        imgs.forEach((src, i) => { const th = h("img", { src, alt: p.name + " " + (i + 1), loading: "lazy", class: i === 0 ? "on" : "" });
+          th.onclick = () => { const big = t.parentNode.querySelector(".img img"); if (big) big.src = src; t.querySelectorAll("img").forEach(x => x.classList.remove("on")); th.classList.add("on"); };
+          t.appendChild(th); });
+        return t;
+      })() : null,
+      h("div", { class: "body" },
+        out ? h("span", { class: "tag" }, "Épuisé") : null,
+        h("h3", {}, p.name), h("p", { class: "price" }, fmt(p.price)),
+        p.description ? h("p", { class: "desc" }, p.description) : null,
+        p.sold > 0 ? h("p", { class: "desc" }, "🛒 " + p.sold + " vendu" + (p.sold > 1 ? "s" : "")) : null,
+        h("div", { style: "display:flex;gap:8px;flex-wrap:wrap" }, likeBtn(p), shareBtn(p)),
+        h("a", { class: "btn wa", href: out ? "#" : waLink(shop.whatsapp, msg), "aria-disabled": out ? "true" : null, target: "_blank", rel: "noopener" }, "Commander sur WhatsApp")));
+  })));
+}
+
+slug ? showShop() : showList();
+</script>
+</body>
+</html>
